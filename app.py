@@ -61,7 +61,7 @@ if df is not None:
     if st.button("Refresh Data"):
         st.cache_data.clear()
         df = load_data(DROPBOX_PATH)
-        st.experimental_rerun()
+        st.rerun()
     
     # Display last update time
     st.write(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
