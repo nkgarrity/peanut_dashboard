@@ -1,8 +1,5 @@
-streamlit
-pandas
-plotly
-numpy
-scipy
-statsmodels
-dropbox
-python-dotenv
+streamlit==1.31.0
+plotly==5.18.0
+pandas==2.1.4
+dropbox==11.36.2
+python-dotenv==1.0.0

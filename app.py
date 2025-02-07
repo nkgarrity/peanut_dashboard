@@ -1,41 +1,27 @@
+# app.py
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from dropbox import Dropbox
 import io
 import os
 from datetime import datetime
 from dotenv import load_dotenv
+from dropbox_client import DropboxClientManager
 
 # Load environment variables
 load_dotenv()
 
-# Dropbox setup
-class DropboxClient:
-    def __init__(self):
-        self.access_token = os.getenv('DROPBOX_ACCESS_TOKEN')
-        self.dbx = None
-        self.last_refresh = None
-        
-    def connect(self):
-        if not self.dbx:
-            self.dbx = Dropbox(self.access_token)
-        return self.dbx
-    
-    def get_file(self, dropbox_path):
-        try:
-            dbx = self.connect()
-            metadata, response = dbx.files_download(dropbox_path)
-            return response.content
-        except Exception as e:
-            st.error(f"Error accessing Dropbox: {e}")
-            return None
+# Initialize the Dropbox client manager
+@st.cache_resource
+def get_dropbox_manager():
+    """Create or get cached DropboxClientManager"""
+    return DropboxClientManager()
 
 @st.cache_data(ttl=300)  # Cache for 5 minutes
 def load_data(dropbox_path):
     """Load data from Dropbox with caching"""
-    client = DropboxClient()
-    content = client.get_file(dropbox_path)
+    manager = get_dropbox_manager()
+    content = manager.get_file(dropbox_path)
     
     if content:
         # Read CSV from bytes content
@@ -115,3 +101,5 @@ if df is not None:
             'mean', 'std', 'min', 'max'
         ]).round(2)
         st.dataframe(disease_stats)
+else:
+    st.error("Unable to load data from Dropbox. Please check your connection and credentials.")
