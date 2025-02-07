@@ -4,3 +4,4 @@ pandas==2.1.4
 dropbox==11.36.2
 python-dotenv==1.0.0
 setuptools>=42.0.0
+requests>=2.25.0
